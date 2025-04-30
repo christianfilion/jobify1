@@ -1,0 +1,8 @@
+{
+  "scripts": {
+    "scrape-jobs": {
+      "command": "node main.js",
+      "schedule": "0 */4 * * *"
+    }
+  }
+}

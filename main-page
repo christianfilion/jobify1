@@ -1,0 +1,91 @@
+import { useState } from "react";
+import { Button } from "@/components/ui/button";
+import { Card, CardContent } from "@/components/ui/card";
+import { Input } from "@/components/ui/input";
+import { Textarea } from "@/components/ui/textarea";
+import { useChatGPT } from "@/lib/useChatGPT"; // Custom hook to integrate ChatGPT
+
+export default function JobifyHome() {
+  const [user, setUser] = useState(null);
+  const [showLogin, setShowLogin] = useState(false);
+  const [loginError, setLoginError] = useState("");
+
+  const handleLogin = async (email, password) => {
+    try {
+      // Simulated login function
+      const res = await fakeLogin(email, password);
+      if (!res.success) throw new Error("Invalid login");
+      setUser(res.user);
+      setLoginError("");
+    } catch (err) {
+      setLoginError("Error 404: Unable to login. Please check your credentials.");
+    }
+  };
+
+  const handleShowLogin = () => setShowLogin(true);
+
+  return (
+    <div className="p-6 grid gap-6">
+      <h1 className="text-3xl font-bold">Welcome to Jobify</h1>
+      {!user && !showLogin && (
+        <div className="grid gap-4">
+          <p>Automate your job applications to TD, RBC, BMO, Manulife and more.</p>
+          <Button onClick={handleShowLogin}>Start Your Journey</Button>
+        </div>
+      )}
+
+      {showLogin && !user && (
+        <Card className="max-w-md">
+          <CardContent className="grid gap-4">
+            <Input type="email" placeholder="Email" id="login-email" />
+            <Input type="password" placeholder="Password" id="login-password" />
+            <Button onClick={() => handleLogin(document.getElementById('login-email').value, document.getElementById('login-password').value)}>Login</Button>
+            {loginError && <p className="text-red-500 text-sm">{loginError}</p>}
+          </CardContent>
+        </Card>
+      )}
+
+      {user && (
+        <Dashboard user={user} />
+      )}
+    </div>
+  );
+}
+
+function Dashboard({ user }) {
+  const { generateResume, generateCoverLetter } = useChatGPT();
+
+  return (
+    <div className="grid gap-6">
+      <h2 className="text-xl font-semibold">Welcome, {user.firstName}</h2>
+      <Card>
+        <CardContent className="grid gap-4">
+          <h3 className="text-lg font-medium">Tools</h3>
+          <Button onClick={() => generateResume(user)}>Generate Resume</Button>
+          <Button onClick={() => generateCoverLetter(user)}>Generate Cover Letter</Button>
+          <Button>Build CV</Button>
+          <Button>Upload Transcripts/Certifications</Button>
+          <Button>Manage Applications</Button>
+          <Button>Set Locations</Button>
+          <Button>Account Preferences (Race, Gender, Disability, etc.)</Button>
+        </CardContent>
+      </Card>
+      <Card>
+        <CardContent>
+          <h3 className="text-lg font-medium">Inbox</h3>
+          <p>(User’s jobify.com email inbox messages will appear here)</p>
+        </CardContent>
+      </Card>
+    </div>
+  );
+}
+
+async function fakeLogin(email, password) {
+  if (email.endsWith("@jobify.com") && password === "password") {
+    return {
+      success: true,
+      user: { firstName: "Alex", lastName: "Johnson", email },
+    };
+  }
+  return { success: false };
+}
