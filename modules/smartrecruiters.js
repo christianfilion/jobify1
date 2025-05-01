@@ -1,17 +1,21 @@
-const { chromium } = require('playwright-extra');
-const stealth = require('playwright-extra-plugin-stealth')();
+const puppeteer = require('puppeteer-extra');
+const StealthPlugin = require('puppeteer-extra-plugin-stealth');
 const { insertJobs } = require('../supabase');
 
-chromium.use(stealth);
+puppeteer.use(StealthPlugin());
 
 async function scrapeSmartRecruiters() {
-  console.log("📡 Scraping SmartRecruiters with XHR response capture...");
+  console.log("📡 Scraping SmartRecruiters with Puppeteer and XHR response capture...");
 
-  const browser = await chromium.launch({ headless: true });
-  const context = await browser.newContext();
-  const page = await context.newPage();
+  const browser = await puppeteer.launch({
+    headless: true,
+    args: ['--no-sandbox', '--disable-setuid-sandbox']
+  });
 
-  const url = 'https://jobs.smartrecruiters.com/company-name'; // Replace with actual company page
+  const page = await browser.newPage();
+  await page.setUserAgent('Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 Chrome/117 Safari/537.36');
+
+  const url = 'https://jobs.smartrecruiters.com/Verkada'; // Actual SmartRecruiters company page
   let jobs = [];
 
   page.on('response', async (response) => {
@@ -23,15 +27,25 @@ async function scrapeSmartRecruiters() {
         results.forEach(job => {
           jobs.push({
             title: job.name || job.title || "Untitled",
-            url: job.ref || job.applyUrl || response.url()
+            url: job.ref || job.applyUrl || resUrl,
+            source: "SmartRecruiters - Verkada",
+            created_at: new Date().toISOString()
           });
         });
-      } catch (_) {}
+      } catch (err) {
+        console.error("❌ Failed to parse SmartRecruiters response:", err.message);
+      }
     }
   });
 
-  await page.goto(url, { waitUntil: 'networkidle' });
-  await page.waitForTimeout(8000);
+  try {
+    await page.goto(url, { waitUntil: 'networkidle0', timeout: 60000 });
+    await page.waitForTimeout(8000);
+  } catch (err) {
+    console.error("❌ Error loading SmartRecruiters page:", err.message);
+    await browser.close();
+    return;
+  }
 
   if (jobs.length === 0) {
     console.log("⚠️ No jobs found via SmartRecruiters.");
@@ -42,4 +56,5 @@ async function scrapeSmartRecruiters() {
 
   await browser.close();
 }
+
 module.exports = { scrapeSmartRecruiters };
