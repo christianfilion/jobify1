@@ -1,18 +1,22 @@
-const { chromium } = require('playwright-extra');
-const stealth = require('playwright-extra-plugin-stealth')();
+const puppeteer = require('puppeteer-extra');
+const StealthPlugin = require('puppeteer-extra-plugin-stealth');
 const { insertJobs } = require('../supabase');
 
-chromium.use(stealth);
+puppeteer.use(StealthPlugin());
 
 async function scrapeBrassring() {
-  console.log("🕵️‍♂️ Scraping Brassring with deep iframe traversal...");
+  console.log("🕵️‍♂️ Scraping Brassring with Puppeteer and deep iframe traversal...");
 
-  const browser = await chromium.launch({ headless: true });
-  const context = await browser.newContext();
-  const page = await context.newPage();
+  const browser = await puppeteer.launch({
+    headless: true,
+    args: ['--no-sandbox', '--disable-setuid-sandbox']
+  });
 
-  const url = 'https://sjobs.brassring.com/TGnewUI/Search/Home/Home?partnerid=26039&siteid=5016'; // Sample Brassring link
-  await page.goto(url, { waitUntil: 'networkidle' });
+  const page = await browser.newPage();
+  await page.setUserAgent('Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 Chrome/117 Safari/537.36');
+
+  const url = 'https://sjobs.brassring.com/TGnewUI/Search/Home/Home?partnerid=26039&siteid=5016';
+  await page.goto(url, { waitUntil: 'domcontentloaded' });
 
   const getBrassringFrame = (frames) => {
     for (const frame of frames) {
@@ -23,7 +27,7 @@ async function scrapeBrassring() {
     return null;
   };
 
-  const brassringFrame = getBrassringFrame(page.frames());
+  const brassringFrame = getBrassringFrame(page.mainFrame().childFrames());
 
   if (!brassringFrame) {
     console.log("❌ Could not find Brassring iframe.");
@@ -35,7 +39,9 @@ async function scrapeBrassring() {
     const jobEls = document.querySelectorAll('.jobTitle span, .job-listing-title, .job');
     return Array.from(jobEls).map(el => ({
       title: el.innerText?.trim() || "Untitled",
-      url: window.location.href
+      url: window.location.href,
+      source: "Brassring",
+      created_at: new Date().toISOString()
     }));
   });
 
@@ -48,4 +54,5 @@ async function scrapeBrassring() {
 
   await browser.close();
 }
+
 module.exports = { scrapeBrassring };
