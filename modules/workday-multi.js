@@ -1,9 +1,6 @@
-const { chromium } = require('playwright-extra');
-const stealth = require('playwright-extra-plugin-stealth')();
+const { chromium } = require('playwright');
 const { insertJobs } = require('../supabase');
 require('dotenv').config();
-
-chromium.use(stealth);
 
 const companies = [
   { name: "RBC", url: "https://recruiting.adp.com/srccar/public/RTI.home?c=1534801&d=ExternalCareerSite" },
@@ -27,8 +24,8 @@ async function scrapeWorkdayCompany(company, browser) {
 
     const allFrames = page.frames();
     const workdayFrame = allFrames.find(f => f.url().includes("workday") || f.url().includes("adp.com"));
-
     const target = workdayFrame || page;
+
     if (!target) throw new Error("No scraping context found");
 
     const jobs = await target.evaluate(() => {
@@ -54,7 +51,7 @@ async function scrapeWorkdayCompany(company, browser) {
   await page.close();
 }
 
-async function scrapeWorkdayMulti() {
+async function scrapeWorkday() {
   console.log("🚀 Starting Workday multi-company scrape...");
   const browser = await chromium.launch({ headless: true });
 
@@ -69,4 +66,5 @@ async function scrapeWorkdayMulti() {
   console.log("✅ Completed all Workday scrapes.");
 }
 
-module.exports = { scrapeWorkdayMulti };
+module.exports = { scrapeWorkday };
+
