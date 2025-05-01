@@ -1,37 +1,52 @@
-const { chromium } = require('playwright-extra');
-const stealth = require('playwright-extra-plugin-stealth')();
+const puppeteer = require('puppeteer-extra');
+const StealthPlugin = require('puppeteer-extra-plugin-stealth');
 const { insertJobs } = require('../supabase');
 
-chromium.use(stealth);
+puppeteer.use(StealthPlugin());
 
 async function scrapeICIMS() {
-  console.log("🔍 Scraping iCIMS with XHR response interception...");
+  console.log("🔍 Scraping iCIMS with Puppeteer + XHR response interception...");
 
-  const browser = await chromium.launch({ headless: true });
-  const context = await browser.newContext();
-  const page = await context.newPage();
+  const browser = await puppeteer.launch({
+    headless: true,
+    args: ['--no-sandbox', '--disable-setuid-sandbox']
+  });
 
-  const url = 'https://jobs.icims.com/jobs/search?ss=1&searchLocation='; // Example
+  const page = await browser.newPage();
+  await page.setUserAgent('Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 Chrome/117 Safari/537.36');
+
+  const url = 'https://jobs.icims.com/jobs/search?ss=1&searchLocation=';
   let jobs = [];
 
+  // Intercept and parse job-related JSON responses
   page.on('response', async (response) => {
-    const url = response.url();
-    if (url.includes('/jobs/search.json') || url.includes('/jobs/')) {
+    const resUrl = response.url();
+    if (resUrl.includes('/jobs/search.json') || resUrl.includes('/jobs/')) {
       try {
         const json = await response.json();
         const results = json.jobs || json || [];
         results.forEach(job => {
           jobs.push({
             title: job.title || "Untitled",
-            url: job.link || job.url || response.url()
+            url: job.link || job.url || resUrl,
+            source: "iCIMS",
+            created_at: new Date().toISOString()
           });
         });
-      } catch (e) {}
+      } catch (e) {
+        console.error("❌ Failed to parse iCIMS XHR response:", e.message);
+      }
     }
   });
 
-  await page.goto(url, { waitUntil: 'networkidle' });
-  await page.waitForTimeout(8000); // Allow time for XHR to load
+  try {
+    await page.goto(url, { waitUntil: 'networkidle0', timeout: 60000 });
+    await page.waitForTimeout(8000);
+  } catch (err) {
+    console.error("❌ Failed to load iCIMS page:", err.message);
+    await browser.close();
+    return;
+  }
 
   if (jobs.length === 0) {
     console.log("⚠️ No jobs found via iCIMS XHR.");
@@ -42,4 +57,5 @@ async function scrapeICIMS() {
 
   await browser.close();
 }
+
 module.exports = { scrapeICIMS };
