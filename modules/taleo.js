@@ -1,32 +1,68 @@
-const { chromium } = require('playwright');
+const puppeteer = require('puppeteer-extra');
+const StealthPlugin = require('puppeteer-extra-plugin-stealth');
 const { insertJobs } = require('../supabase');
+require('dotenv').config();
 
-async function scrapeTaleo() {
-  const browser = await chromium.launch({ headless: true });
+puppeteer.use(StealthPlugin());
+
+const companies = [
+  { name: "TD Bank", url: "https://td.taleo.net/careersection/2/jobsearch.ftl" },
+  { name: "CIBC", url: "https://cibc.taleo.net/careersection/1/jobsearch.ftl" },
+  { name: "Rogers Communications", url: "https://rogers.taleo.net/careersection/2/jobsearch.ftl" },
+  { name: "McKesson", url: "https://mckesson.taleo.net/careersection/2/jobsearch.ftl" },
+  { name: "Oracle", url: "https://oracle.taleo.net/careersection/2/jobsearch.ftl" }
+];
+
+async function scrapeTaleoCompany(company, browser) {
+  console.log(`🌐 Scraping Taleo: ${company.name} (${company.url})`);
+
   const page = await browser.newPage();
+  await page.setUserAgent('Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 Chrome/117 Safari/537.36');
 
   try {
-    console.log("🔍 Scraping Taleo job board...");
-    await page.goto("https://your-taleo-url.example.com", { waitUntil: 'domcontentloaded' });
+    await page.goto(company.url, { waitUntil: 'domcontentloaded', timeout: 60000 });
     await page.waitForTimeout(5000);
 
-    const jobs = await page.evaluate(() => {
-      const items = Array.from(document.querySelectorAll('li.job-title')).map(el => ({
-        title: el.innerText.trim(),
+    const jobs = await page.$$eval('li.job-title', elements =>
+      elements.map(el => ({
+        title: el.innerText?.trim() || "Untitled",
         url: window.location.href,
-        source: "Taleo",
+        source: `Taleo - ${company.name}`,
         created_at: new Date().toISOString()
-      }));
-      return items;
-    });
+      }))
+    );
 
-    await insertJobs(jobs);
-    console.log(`✅ ${jobs.length} Taleo jobs inserted.`);
+    if (jobs.length > 0) {
+      await insertJobs(jobs);
+      console.log(`✅ Inserted ${jobs.length} jobs from ${company.name}`);
+    } else {
+      console.log(`⚠️ No jobs found on ${company.name}`);
+    }
+
   } catch (err) {
-    console.error("❌ Error scraping Taleo:", err.message);
+    console.error(`❌ Error scraping ${company.name}:`, err.message);
+  }
+
+  await page.close();
+}
+
+async function scrapeTaleo() {
+  console.log("🚀 Starting multi-company Taleo scrape...");
+
+  const browser = await puppeteer.launch({
+    headless: true,
+    args: ['--no-sandbox', '--disable-setuid-sandbox']
+  });
+
+  for (const company of companies) {
+    await scrapeTaleoCompany(company, browser);
+    const delay = Math.floor(Math.random() * 3000 + 2000); // 2–5s delay
+    console.log(`⏳ Waiting ${delay}ms before next company...`);
+    await new Promise(res => setTimeout(res, delay));
   }
 
   await browser.close();
+  console.log("✅ Completed all Taleo scrapes.");
 }
 
 module.exports = { scrapeTaleo };
