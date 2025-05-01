@@ -8,20 +8,19 @@ puppeteer.use(StealthPlugin());
 const companies = [
   { name: "TD Bank", url: "https://td.taleo.net/careersection/2/jobsearch.ftl" },
   { name: "CIBC", url: "https://cibc.taleo.net/careersection/1/jobsearch.ftl" },
-  { name: "Rogers Communications", url: "https://rogers.taleo.net/careersection/2/jobsearch.ftl" },
-  { name: "McKesson", url: "https://mckesson.taleo.net/careersection/2/jobsearch.ftl" },
-  { name: "Oracle", url: "https://oracle.taleo.net/careersection/2/jobsearch.ftl" }
+  { name: "BMO", url: "https://bmo.taleo.net/careersection/2/jobsearch.ftl" },
+  { name: "Sun Life", url: "https://sunlife.taleo.net/careersection/1/jobsearch.ftl" }
 ];
 
 async function scrapeTaleoCompany(company, browser) {
   console.log(`🌐 Scraping Taleo: ${company.name} (${company.url})`);
 
   const page = await browser.newPage();
-  await page.setUserAgent('Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 Chrome/117 Safari/537.36');
+  await page.setUserAgent('Mozilla/5.0');
 
   try {
     await page.goto(company.url, { waitUntil: 'domcontentloaded', timeout: 60000 });
-    await page.waitForTimeout(5000);
+    await new Promise(r => setTimeout(r, 5000));
 
     const jobs = await page.$$eval('li.job-title', elements =>
       elements.map(el => ({
@@ -56,7 +55,7 @@ async function scrapeTaleo() {
 
   for (const company of companies) {
     await scrapeTaleoCompany(company, browser);
-    const delay = Math.floor(Math.random() * 3000 + 2000); // 2–5s delay
+    const delay = Math.floor(Math.random() * 3000 + 2000);
     console.log(`⏳ Waiting ${delay}ms before next company...`);
     await new Promise(res => setTimeout(res, delay));
   }
