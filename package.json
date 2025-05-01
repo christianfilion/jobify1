@@ -1,5 +1,5 @@
 {
-  "name": "jobify-full-engine",
+  "name": "jobify-puppeteer-engine",
   "version": "1.0.0",
   "main": "main.js",
   "scripts": {
@@ -9,7 +9,8 @@
     "@supabase/supabase-js": "^2.39.0",
     "dotenv": "^16.4.5",
     "nodemailer": "^6.9.0",
-    "playwright": "^1.30.0",
-    "playwright-extra": "^4.3.0"
+    "puppeteer-extra": "^3.3.4",
+    "puppeteer-extra-plugin-stealth": "^2.11.1",
+    "puppeteer": "^21.3.8"
   }
 }
