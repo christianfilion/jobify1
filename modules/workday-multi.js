@@ -1,5 +1,6 @@
 const puppeteer = require('puppeteer-extra');
 const StealthPlugin = require('puppeteer-extra-plugin-stealth');
+const fs = require('fs');
 const { insertJobs } = require('../supabase');
 require('dotenv').config();
 
@@ -35,7 +36,22 @@ async function scrapeWorkdayCompany(company, browser) {
     const workdayFrame = allFrames.find(f => f.url().includes("workday") || f.url().includes("adp.com"));
     const target = workdayFrame || page;
 
-    if (!target) throw new Error("No scraping context found");
+    if (!target) {
+      console.log(`❌ No scraping context found for ${company.name}`);
+      await page.screenshot({ path: `screenshots/${company.name}_no_frame.png` });
+      return;
+    }
+
+    // CAPTCHA check
+    const isCaptcha = await target.evaluate(() => {
+      return !!document.querySelector('iframe[src*="recaptcha"]');
+    });
+
+    if (isCaptcha) {
+      console.log(`🔒 CAPTCHA detected on ${company.name}, skipping...`);
+      await page.screenshot({ path: `screenshots/${company.name}_captcha_detected.png` });
+      return;
+    }
 
     const jobs = await target.evaluate(() => {
       const selectors = ['div.job-title', '.jobPosting', 'li.job', '.posting-title'];
@@ -54,9 +70,11 @@ async function scrapeWorkdayCompany(company, browser) {
       console.log(`✅ ${jobs.length} jobs added from ${company.name}`);
     } else {
       console.log(`⚠️ No jobs found for ${company.name}`);
+      await page.screenshot({ path: `screenshots/${company.name}_no_jobs.png` });
     }
   } catch (err) {
     console.error(`❌ Error scraping ${company.name}:`, err.message);
+    await page.screenshot({ path: `screenshots/${company.name}_error.png` });
   }
 
   await page.close();
@@ -69,6 +87,11 @@ async function scrapeWorkday() {
     headless: true,
     args: ['--no-sandbox', '--disable-setuid-sandbox']
   });
+
+  // Ensure screenshot directory exists
+  if (!fs.existsSync('screenshots')) {
+    fs.mkdirSync('screenshots');
+  }
 
   for (const company of companies) {
     await scrapeWorkdayCompany(company, browser);
