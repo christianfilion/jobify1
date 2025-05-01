@@ -10,7 +10,6 @@
     "dotenv": "^16.4.5",
     "nodemailer": "^6.9.0",
     "playwright": "^1.30.0",
-    "playwright-extra": "^4.3.0",
-    "playwright-extra-plugin-stealth": "^2.4.6"
+    "playwright-extra": "^4.3.0"
   }
 }
