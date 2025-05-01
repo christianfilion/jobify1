@@ -16,7 +16,14 @@ async function scrapeBrassring() {
   await page.setUserAgent('Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 Chrome/117 Safari/537.36');
 
   const url = 'https://sjobs.brassring.com/TGnewUI/Search/Home/Home?partnerid=26039&siteid=5016';
-  await page.goto(url, { waitUntil: 'domcontentloaded' });
+
+  try {
+    await page.goto(url, { waitUntil: 'domcontentloaded', timeout: 60000 });
+  } catch (err) {
+    console.log("❌ Failed to load Brassring page:", err.message);
+    await browser.close();
+    return;
+  }
 
   const getBrassringFrame = (frames) => {
     for (const frame of frames) {
@@ -31,6 +38,14 @@ async function scrapeBrassring() {
 
   if (!brassringFrame) {
     console.log("❌ Could not find Brassring iframe.");
+    await browser.close();
+    return;
+  }
+
+  try {
+    await brassringFrame.waitForSelector('.jobTitle span, .job-listing-title, .job', { timeout: 10000 });
+  } catch (err) {
+    console.log("⚠️ No job selectors appeared in Brassring frame:", err.message);
     await browser.close();
     return;
   }
