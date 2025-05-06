@@ -4,21 +4,28 @@ const { insertJobs } = require('../supabase');
 
 puppeteer.use(StealthPlugin());
 
-async function scrapeICIMS() {
-  console.log("🔍 Scraping iCIMS with Puppeteer + XHR response interception...");
+async function scrapeICIMS({ company, url, proxy }) {
+  console.log(`🔍 [${company}] Scraping iCIMS with XHR interception from ${url}`);
 
-  const browser = await puppeteer.launch({
+  const launchOptions = {
     headless: true,
     args: ['--no-sandbox', '--disable-setuid-sandbox']
-  });
+  };
 
+  if (proxy) {
+    launchOptions.args.push(`--proxy-server=${proxy}`);
+  }
+
+  const browser = await puppeteer.launch(launchOptions);
   const page = await browser.newPage();
-  await page.setUserAgent('Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 Chrome/117 Safari/537.36');
 
-  const url = 'https://jobs.icims.com/jobs/search?ss=1&searchLocation=';
+  await page.setUserAgent(
+    'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 Chrome/117 Safari/537.36'
+  );
+
   let jobs = [];
 
-  // Intercept and parse job-related JSON responses
+  // 🧠 Intercept API/XHR calls to extract job data
   page.on('response', async (response) => {
     const resUrl = response.url();
     if (resUrl.includes('/jobs/search.json') || resUrl.includes('/jobs/')) {
@@ -27,14 +34,14 @@ async function scrapeICIMS() {
         const results = json.jobs || json || [];
         results.forEach(job => {
           jobs.push({
-            title: job.title || "Untitled",
+            title: job.title || 'Untitled',
             url: job.link || job.url || resUrl,
-            source: "iCIMS",
+            source: 'iCIMS',
             created_at: new Date().toISOString()
           });
         });
       } catch (e) {
-        console.error("❌ Failed to parse iCIMS XHR response:", e.message);
+        console.error(`❌ [${company}] Failed to parse iCIMS response: ${e.message}`);
       }
     }
   });
@@ -43,16 +50,16 @@ async function scrapeICIMS() {
     await page.goto(url, { waitUntil: 'networkidle0', timeout: 60000 });
     await page.waitForTimeout(8000);
   } catch (err) {
-    console.error("❌ Failed to load iCIMS page:", err.message);
+    console.error(`❌ [${company}] Failed to load iCIMS page: ${err.message}`);
     await browser.close();
     return;
   }
 
   if (jobs.length === 0) {
-    console.log("⚠️ No jobs found via iCIMS XHR.");
+    console.warn(`⚠️ [${company}] No jobs found via iCIMS`);
   } else {
     await insertJobs(jobs);
-    console.log(`✅ Inserted ${jobs.length} jobs from iCIMS.`);
+    console.log(`✅ [${company}] Inserted ${jobs.length} iCIMS jobs`);
   }
 
   await browser.close();
