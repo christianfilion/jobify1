@@ -1,0 +1,507 @@
+[
+  {
+    "name": "Amazon",
+    "ats": "iCIMS",
+    "url": "https://www.amazon.jobs"
+  },
+  {
+    "name": "Walmart",
+    "ats": "Workday",
+    "url": "https://careers.walmart.com"
+  },
+  {
+    "name": "Alphabet (Google)",
+    "ats": "GoogleATS",
+    "url": "https://careers.google.com"
+  },
+  {
+    "name": "Microsoft",
+    "ats": "SuccessFactors",
+    "url": "https://careers.microsoft.com"
+  },
+  {
+    "name": "Apple",
+    "ats": "AppleATS",
+    "url": "https://jobs.apple.com"
+  },
+  {
+    "name": "JPMorgan Chase",
+    "ats": "Taleo",
+    "url": "https://careers.jpmorgan.com"
+  },
+  {
+    "name": "Bank of America",
+    "ats": "Taleo",
+    "url": "https://careers.bankofamerica.com"
+  },
+  {
+    "name": "Wells Fargo",
+    "ats": "Taleo",
+    "url": "https://www.wellsfargo.com/careers"
+  },
+  {
+    "name": "UnitedHealth Group",
+    "ats": "Workday",
+    "url": "https://careers.unitedhealthgroup.com"
+  },
+  {
+    "name": "CVS Health",
+    "ats": "Brassring",
+    "url": "https://jobs.cvshealth.com"
+  },
+  {
+    "name": "The Home Depot",
+    "ats": "SuccessFactors",
+    "url": "https://careers.homedepot.com"
+  },
+  {
+    "name": "Berkshire Hathaway",
+    "ats": "Manual",
+    "url": "https://www.berkshirehathaway.com/employment.html"
+  },
+  {
+    "name": "Costco",
+    "ats": "Manual",
+    "url": "https://www.costco.com/jobs.html"
+  },
+  {
+    "name": "Cigna",
+    "ats": "iCIMS",
+    "url": "https://jobs.cigna.com"
+  },
+  {
+    "name": "Anthem",
+    "ats": "SuccessFactors",
+    "url": "https://careers.elevancehealth.com"
+  },
+  {
+    "name": "Kroger",
+    "ats": "Taleo",
+    "url": "https://jobs.kroger.com"
+  },
+  {
+    "name": "Target",
+    "ats": "iCIMS",
+    "url": "https://corporate.target.com/careers"
+  },
+  {
+    "name": "UPS",
+    "ats": "Workday",
+    "url": "https://www.jobs-ups.com"
+  },
+  {
+    "name": "FedEx",
+    "ats": "SuccessFactors",
+    "url": "https://careers.fedex.com"
+  },
+  {
+    "name": "Lowe's",
+    "ats": "SuccessFactors",
+    "url": "https://jobs.lowes.com"
+  },
+  {
+    "name": "Pfizer",
+    "ats": "Taleo",
+    "url": "https://www.pfizer.com/careers"
+  },
+  {
+    "name": "Johnson & Johnson",
+    "ats": "Taleo",
+    "url": "https://careers.jnj.com"
+  },
+  {
+    "name": "Procter & Gamble",
+    "ats": "Taleo",
+    "url": "https://www.pgcareers.com"
+  },
+  {
+    "name": "General Electric",
+    "ats": "SuccessFactors",
+    "url": "https://jobs.gecareers.com"
+  },
+  {
+    "name": "IBM",
+    "ats": "Brassring",
+    "url": "https://www.careers.ibm.com"
+  },
+  {
+    "name": "Intel",
+    "ats": "SuccessFactors",
+    "url": "https://jobs.intel.com"
+  },
+  {
+    "name": "Cisco",
+    "ats": "Taleo",
+    "url": "https://jobs.cisco.com"
+  },
+  {
+    "name": "Oracle",
+    "ats": "Taleo",
+    "url": "https://www.oracle.com/corporate/careers"
+  },
+  {
+    "name": "Salesforce",
+    "ats": "Jobvite",
+    "url": "https://www.salesforce.com/company/careers"
+  },
+  {
+    "name": "Accenture",
+    "ats": "Workday",
+    "url": "https://www.careers.accenture.com"
+  },
+  {
+    "name": "Deloitte",
+    "ats": "SuccessFactors",
+    "url": "https://jobs.deloitte.com"
+  },
+  {
+    "name": "EY",
+    "ats": "SuccessFactors",
+    "url": "https://www.ey.com/en_us/careers"
+  },
+  {
+    "name": "KPMG",
+    "ats": "SuccessFactors",
+    "url": "https://home.kpmg/xx/en/home/careers.html"
+  },
+  {
+    "name": "PwC",
+    "ats": "SuccessFactors",
+    "url": "https://www.pwc.com/us/en/careers.html"
+  },
+  {
+    "name": "McDonald's",
+    "ats": "iCIMS",
+    "url": "https://careers.mcdonalds.com"
+  },
+  {
+    "name": "Starbucks",
+    "ats": "iCIMS",
+    "url": "https://www.starbucks.com/careers"
+  },
+  {
+    "name": "PepsiCo",
+    "ats": "SuccessFactors",
+    "url": "https://www.pepsicojobs.com"
+  },
+  {
+    "name": "Coca-Cola",
+    "ats": "SuccessFactors",
+    "url": "https://careers.coca-colacompany.com"
+  },
+  {
+    "name": "General Motors",
+    "ats": "Taleo",
+    "url": "https://careers.gm.com"
+  },
+  {
+    "name": "Ford",
+    "ats": "Taleo",
+    "url": "https://corporate.ford.com/careers.html"
+  },
+  {
+    "name": "Tesla",
+    "ats": "Greenhouse",
+    "url": "https://www.tesla.com/careers"
+  },
+  {
+    "name": "Boeing",
+    "ats": "Taleo",
+    "url": "https://jobs.boeing.com"
+  },
+  {
+    "name": "Northrop Grumman",
+    "ats": "Taleo",
+    "url": "https://careers.northropgrumman.com"
+  },
+  {
+    "name": "Raytheon Technologies",
+    "ats": "Workday",
+    "url": "https://www.rtx.com/Careers"
+  },
+  {
+    "name": "Lockheed Martin",
+    "ats": "Brassring",
+    "url": "https://www.lockheedmartinjobs.com"
+  },
+  {
+    "name": "United Technologies",
+    "ats": "Taleo",
+    "url": "https://www.utc.com/Careers"
+  },
+  {
+    "name": "Honeywell",
+    "ats": "iCIMS",
+    "url": "https://careers.honeywell.com"
+  },
+  {
+    "name": "3M",
+    "ats": "Workday",
+    "url": "https://www.3m.com/careers"
+  },
+  {
+    "name": "Johnson Controls",
+    "ats": "iCIMS",
+    "url": "https://jobs.johnsoncontrols.com"
+  },
+  {
+    "name": "Medtronic",
+    "ats": "SuccessFactors",
+    "url": "https://jobs.medtronic.com"
+  },
+  {
+    "name": "RBC",
+    "ats": "Workday",
+    "url": "https://www.rbc.com/careers"
+  },
+  {
+    "name": "TD",
+    "ats": "Workday",
+    "url": "https://www.td.com/careers"
+  },
+  {
+    "name": "Scotiabank",
+    "ats": "Workday",
+    "url": "https://www.scotiabank.com/careers"
+  },
+  {
+    "name": "CIBC",
+    "ats": "Taleo",
+    "url": "https://jobs.cibc.com"
+  },
+  {
+    "name": "BMO",
+    "ats": "Taleo",
+    "url": "https://jobs.bmo.com"
+  },
+  {
+    "name": "Manulife",
+    "ats": "SuccessFactors",
+    "url": "https://www.manulife.com/careers"
+  },
+  {
+    "name": "Sun Life",
+    "ats": "Taleo",
+    "url": "https://careers.sunlife.com"
+  },
+  {
+    "name": "Shopify",
+    "ats": "Greenhouse",
+    "url": "https://www.shopify.com/careers"
+  },
+  {
+    "name": "Bell",
+    "ats": "SuccessFactors",
+    "url": "https://www.bell.ca/careers"
+  },
+  {
+    "name": "Telus",
+    "ats": "SuccessFactors",
+    "url": "https://www.telus.com/careers"
+  },
+  {
+    "name": "Rogers",
+    "ats": "SuccessFactors",
+    "url": "https://jobs.rogers.com"
+  },
+  {
+    "name": "Enbridge",
+    "ats": "Workday",
+    "url": "https://www.enbridge.com/careers"
+  },
+  {
+    "name": "Suncor",
+    "ats": "SuccessFactors",
+    "url": "https://www.suncor.com/careers"
+  },
+  {
+    "name": "CNRL",
+    "ats": "Custom",
+    "url": "https://www.cnrl.com/careers"
+  },
+  {
+    "name": "Cenovus",
+    "ats": "Workday",
+    "url": "https://www.cenovus.com/careers"
+  },
+  {
+    "name": "Imperial Oil",
+    "ats": "Custom",
+    "url": "https://www.imperialoil.ca/careers"
+  },
+  {
+    "name": "CP Rail",
+    "ats": "Custom",
+    "url": "https://www.cpr.ca/en/careers"
+  },
+  {
+    "name": "CN Rail",
+    "ats": "Custom",
+    "url": "https://www.cn.ca/en/careers"
+  },
+  {
+    "name": "Air Canada",
+    "ats": "Workday",
+    "url": "https://careers.aircanada.com"
+  },
+  {
+    "name": "WestJet",
+    "ats": "SuccessFactors",
+    "url": "https://www.westjet.com/en-ca/about-us/careers"
+  },
+  {
+    "name": "Bombardier",
+    "ats": "SuccessFactors",
+    "url": "https://www.bombardier.com/en/careers"
+  },
+  {
+    "name": "Magna",
+    "ats": "Taleo",
+    "url": "https://www.magna.com/careers"
+  },
+  {
+    "name": "Linamar",
+    "ats": "Custom",
+    "url": "https://www.linamar.com/careers"
+  },
+  {
+    "name": "SNC-Lavalin",
+    "ats": "iCIMS",
+    "url": "https://careers.snclavalin.com"
+  },
+  {
+    "name": "WSP Global",
+    "ats": "Workday",
+    "url": "https://www.wsp.com/en-CA/careers"
+  },
+  {
+    "name": "Hatch Ltd.",
+    "ats": "SuccessFactors",
+    "url": "https://www.hatch.com/careers"
+  },
+  {
+    "name": "CGI Inc.",
+    "ats": "Workday",
+    "url": "https://www.cgi.com/en/careers"
+  },
+  {
+    "name": "OpenText",
+    "ats": "Workday",
+    "url": "https://www.opentext.com/about/careers"
+  },
+  {
+    "name": "BlackBerry",
+    "ats": "Custom",
+    "url": "https://www.blackberry.com/company/careers"
+  },
+  {
+    "name": "Thomson Reuters",
+    "ats": "iCIMS",
+    "url": "https://www.thomsonreuters.com/en/careers"
+  },
+  {
+    "name": "Loblaws",
+    "ats": "SuccessFactors",
+    "url": "https://www.loblaw.ca/en/careers"
+  },
+  {
+    "name": "Sobeys",
+    "ats": "SuccessFactors",
+    "url": "https://corporate.sobeys.com/careers"
+  },
+  {
+    "name": "Metro Inc.",
+    "ats": "SuccessFactors",
+    "url": "https://corpo.metro.ca/en/careers.html"
+  },
+  {
+    "name": "George Weston Ltd.",
+    "ats": "Custom",
+    "url": "https://www.weston.ca/en/careers"
+  },
+  {
+    "name": "Canadian Tire",
+    "ats": "SuccessFactors",
+    "url": "https://corp.canadiantire.ca/EN/careers"
+  },
+  {
+    "name": "Hudson's Bay",
+    "ats": "Workday",
+    "url": "https://www.thebay.com/careers"
+  },
+  {
+    "name": "McCain Foods",
+    "ats": "Workday",
+    "url": "https://www.mccain.com/careers"
+  },
+  {
+    "name": "Maple Leaf Foods",
+    "ats": "iCIMS",
+    "url": "https://www.mapleleaffoods.com/careers"
+  },
+  {
+    "name": "Saputo",
+    "ats": "SuccessFactors",
+    "url": "https://www.saputo.com/en/careers"
+  },
+  {
+    "name": "BRP",
+    "ats": "SuccessFactors",
+    "url": "https://www.brp.com/en/careers"
+  },
+  {
+    "name": "Couche-Tard",
+    "ats": "SuccessFactors",
+    "url": "https://www.couche-tard.com/careers"
+  },
+  {
+    "name": "Empire Company",
+    "ats": "Custom",
+    "url": "https://www.empireco.ca/careers"
+  },
+  {
+    "name": "Brookfield Asset Mgmt",
+    "ats": "Custom",
+    "url": "https://bam.brookfield.com/en/careers"
+  },
+  {
+    "name": "Power Corporation",
+    "ats": "Custom",
+    "url": "https://www.powercorporation.com/en/careers"
+  },
+  {
+    "name": "Intact Financial",
+    "ats": "Workday",
+    "url": "https://www.intactfc.com/careers"
+  },
+  {
+    "name": "Fairfax Holdings",
+    "ats": "Custom",
+    "url": "https://www.fairfax.ca/careers"
+  },
+  {
+    "name": "Great-West Lifeco",
+    "ats": "Workday",
+    "url": "https://www.greatwestlifeco.com/careers"
+  },
+  {
+    "name": "Desjardins Group",
+    "ats": "SuccessFactors",
+    "url": "https://www.desjardins.com/ca/careers"
+  },
+  {
+    "name": "National Bank",
+    "ats": "Taleo",
+    "url": "https://jobs.nbc.ca"
+  },
+  {
+    "name": "Laurentian Bank",
+    "ats": "Custom",
+    "url": "https://www.laurentianbank.ca/en/about/careers"
+  },
+  {
+    "name": "IA Financial Group",
+    "ats": "SuccessFactors",
+    "url": "https://ia.ca/en/careers"
+  }
+]
