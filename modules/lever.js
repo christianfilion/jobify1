@@ -4,18 +4,24 @@ const { insertJobs } = require('../supabase');
 
 puppeteer.use(StealthPlugin());
 
-async function scrapeLever() {
-  console.log("🔍 Scraping Lever...");
+async function scrapeLever({ company, url, proxy }) {
+  console.log(`🔍 [${company}] Scraping Lever at ${url}...`);
 
-  const browser = await puppeteer.launch({
+  const launchOptions = {
     headless: true,
     args: ['--no-sandbox', '--disable-setuid-sandbox']
-  });
+  };
 
+  if (proxy) {
+    launchOptions.args.push(`--proxy-server=${proxy}`);
+  }
+
+  const browser = await puppeteer.launch(launchOptions);
   const page = await browser.newPage();
-  await page.setUserAgent('Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 Chrome/117 Safari/537.36');
 
-  const url = 'https://jobs.lever.co/example-company'; // Replace with real Lever URL
+  await page.setUserAgent(
+    'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 Chrome/117 Safari/537.36'
+  );
 
   try {
     await page.goto(url, { waitUntil: 'domcontentloaded', timeout: 60000 });
@@ -36,16 +42,15 @@ async function scrapeLever() {
 
     if (jobs.length > 0) {
       await insertJobs(jobs);
-      console.log(`✅ Inserted ${jobs.length} jobs from Lever.`);
+      console.log(`✅ [${company}] Inserted ${jobs.length} Lever jobs`);
     } else {
-      console.log("⚠️ No jobs found on Lever.");
+      console.warn(`⚠️ [${company}] No jobs found on Lever`);
     }
-
   } catch (err) {
-    console.error("❌ Error scraping Lever:", err.message);
+    console.error(`❌ [${company}] Lever error: ${err.message}`);
+  } finally {
+    await browser.close();
   }
-
-  await browser.close();
 }
 
 module.exports = { scrapeLever };
