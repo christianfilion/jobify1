@@ -2,54 +2,46 @@ const puppeteer = require('puppeteer-extra');
 const StealthPlugin = require('puppeteer-extra-plugin-stealth');
 const fs = require('fs');
 const { insertJobs } = require('../supabase');
-require('dotenv').config();
 
 puppeteer.use(StealthPlugin());
 
-const companies = [
-  { name: "RBC", url: "https://recruiting.adp.com/srccar/public/RTI.home?c=1534801&d=ExternalCareerSite" },
-  { name: "Capital One", url: "https://capitalone.wd1.myworkdayjobs.com/Capital_One" },
-  { name: "Deloitte", url: "https://deloitte.wd1.myworkdayjobs.com/DeloitteCareers" },
-  { name: "Amazon", url: "https://amazon.jobs/en/teams/workday" },
-  { name: "TD", url: "https://recruiting.adp.com/srccar/public/RTI.home?c=1234567&d=ExternalCareerSite" }
-];
+async function scrapeWorkday({ company, url, proxy }) {
+  console.log(`🌐 [${company}] Scraping Workday at ${url}`);
 
-async function scrapeWorkdayCompany(company, browser) {
-  console.log(`🌐 Scraping ${company.name}: ${company.url}`);
+  const launchOptions = {
+    headless: true,
+    args: ['--no-sandbox', '--disable-setuid-sandbox']
+  };
 
-  const page = await browser.newPage();
-
-  if (process.env.PROXY_URL) {
-    await page.authenticate({
-      username: process.env.PROXY_USERNAME || '',
-      password: process.env.PROXY_PASSWORD || ''
-    });
+  if (proxy) {
+    launchOptions.args.push(`--proxy-server=${proxy}`);
   }
 
-  await page.setUserAgent('Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 Chrome/117 Safari/537.36');
+  const browser = await puppeteer.launch(launchOptions);
+  const page = await browser.newPage();
+
+  await page.setUserAgent(
+    'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 Chrome/117 Safari/537.36'
+  );
 
   try {
-    await page.goto(company.url, { waitUntil: 'domcontentloaded', timeout: 60000 });
+    await page.goto(url, { waitUntil: 'domcontentloaded', timeout: 60000 });
     await page.waitForTimeout(5000);
 
+    // Handle embedded iframe or ADP/Workday frame
     const allFrames = page.mainFrame().childFrames();
-    const workdayFrame = allFrames.find(f => f.url().includes("workday") || f.url().includes("adp.com"));
+    const workdayFrame = allFrames.find(f => f.url().includes('workday') || f.url().includes('adp.com'));
     const target = workdayFrame || page;
 
-    if (!target) {
-      console.log(`❌ No scraping context found for ${company.name}`);
-      await page.screenshot({ path: `screenshots/${company.name}_no_frame.png` });
-      return;
-    }
-
-    // CAPTCHA check
+    // CAPTCHA detection
     const isCaptcha = await target.evaluate(() => {
       return !!document.querySelector('iframe[src*="recaptcha"]');
     });
 
     if (isCaptcha) {
-      console.log(`🔒 CAPTCHA detected on ${company.name}, skipping...`);
-      await page.screenshot({ path: `screenshots/${company.name}_captcha_detected.png` });
+      console.log(`🔒 [${company}] CAPTCHA detected — skipping.`);
+      await page.screenshot({ path: `screenshots/${company}_captcha.png` });
+      await browser.close();
       return;
     }
 
@@ -58,50 +50,26 @@ async function scrapeWorkdayCompany(company, browser) {
       const elements = selectors.flatMap(sel => Array.from(document.querySelectorAll(sel)));
       const deduped = [...new Set(elements)];
       return deduped.map(el => ({
-        title: el.innerText?.trim() || "Untitled",
+        title: el.innerText?.trim() || 'Untitled',
         url: window.location.href,
-        source: "Workday",
+        source: 'Workday',
         created_at: new Date().toISOString()
       }));
     });
 
     if (jobs.length > 0) {
       await insertJobs(jobs);
-      console.log(`✅ ${jobs.length} jobs added from ${company.name}`);
+      console.log(`✅ [${company}] Inserted ${jobs.length} Workday jobs`);
     } else {
-      console.log(`⚠️ No jobs found for ${company.name}`);
-      await page.screenshot({ path: `screenshots/${company.name}_no_jobs.png` });
+      console.warn(`⚠️ [${company}] No jobs found on Workday`);
+      await page.screenshot({ path: `screenshots/${company}_no_jobs.png` });
     }
   } catch (err) {
-    console.error(`❌ Error scraping ${company.name}:`, err.message);
-    await page.screenshot({ path: `screenshots/${company.name}_error.png` });
-  }
-
-  await page.close();
-}
-
-async function scrapeWorkday() {
-  console.log("🚀 Starting Workday multi-company scrape...");
-
-  const browser = await puppeteer.launch({
-    headless: true,
-    args: ['--no-sandbox', '--disable-setuid-sandbox']
-  });
-
-  // Ensure screenshot directory exists
-  if (!fs.existsSync('screenshots')) {
-    fs.mkdirSync('screenshots');
-  }
-
-  for (const company of companies) {
-    await scrapeWorkdayCompany(company, browser);
-    const delay = Math.floor(Math.random() * 5000 + 3000); // 3–8s delay
-    console.log(`⏳ Waiting ${delay}ms before next company...`);
-    await new Promise(res => setTimeout(res, delay));
+    console.error(`❌ [${company}] Workday scrape error: ${err.message}`);
+    await page.screenshot({ path: `screenshots/${company}_error.png` });
   }
 
   await browser.close();
-  console.log("✅ Completed all Workday scrapes.");
 }
 
 module.exports = { scrapeWorkday };
