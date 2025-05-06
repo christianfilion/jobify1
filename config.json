@@ -1,7 +1,7 @@
 {
   "company": "Deloitte",
   "delay": 6000,
-  "proxy": "http://user:pass@proxyhost:port",
+  "proxy": null,
   "proxies": [
     "http://user1:pass1@proxy1:port",
     "http://user2:pass2@proxy2:port"
