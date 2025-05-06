@@ -1,14 +1,24 @@
-const { program } = require('commander');
 const fs = require('fs');
 require('dotenv').config();
 
-program
-  .option('-c, --company <name>', 'Filter by company name (e.g., RBC)')
-  .option('-d, --delay <ms>', 'Delay between scrapes in ms (default: 5000)')
-  .option('-p, --proxy <index>', 'Use proxy from config list by index');
+let program = null;
+let options = {};
 
-program.parse(process.argv);
-const options = program.opts();
+try {
+  // Try to import commander if available
+  const commander = require('commander');
+  program = new commander.Command();
+
+  program
+    .option('-c, --company <name>', 'Filter by company name (e.g., RBC)')
+    .option('-d, --delay <ms>', 'Delay between scrapes in ms (default: 5000)')
+    .option('-p, --proxy <index>', 'Use proxy from config list by index');
+
+  program.parse(process.argv);
+  options = program.opts();
+} catch (err) {
+  console.warn("⚠️ Commander not available — skipping CLI args (Railway or minimal env?)");
+}
 
 // Load optional config.json
 let config = {};
