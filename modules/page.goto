@@ -1,0 +1,12 @@
+let loaded = false;
+for (let attempt = 1; attempt <= 3 && !loaded; attempt++) {
+  try {
+    console.log(`▶️ Attempt ${attempt} to load ${url}`);
+    await page.goto(url, { waitUntil: 'domcontentloaded', timeout: 60000 });
+    loaded = true;
+  } catch (err) {
+    console.error(`❌ Attempt ${attempt} failed: ${err.message}`);
+    if (attempt === 3) throw err;
+    await page.waitForTimeout(3000);
+  }
+}
