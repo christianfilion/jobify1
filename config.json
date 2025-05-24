@@ -1,9 +1,7 @@
 {
-  "company": "Deloitte",
   "delay": 6000,
   "proxies": [
     "http://user1:pass1@proxy1:port",
     "http://user2:pass2@proxy2:port"
-  ],
-  "url": "https://careers.deloitte.ca/go/Experienced-professionals-opportunities/9604300/"
+  ]
 }
