@@ -9,7 +9,14 @@ async function scrapeSuccessFactors({ company, url, proxy }) {
 
   const launchOptions = {
     headless: true,
-    args: ['--no-sandbox', '--disable-setuid-sandbox']
+    args: [
+      '--no-sandbox',
+      '--disable-setuid-sandbox',
+      '--disable-dev-shm-usage',
+      '--disable-gpu',
+      '--window-size=1920,1080',
+      '--disable-features=site-per-process'
+    ]
   };
 
   if (proxy) {
@@ -24,8 +31,20 @@ async function scrapeSuccessFactors({ company, url, proxy }) {
   );
 
   try {
-    await page.goto(url, { waitUntil: 'domcontentloaded', timeout: 60000 });
-    await page.waitForTimeout(5000);
+    let loaded = false;
+    for (let attempt = 1; attempt <= 3 && !loaded; attempt++) {
+      try {
+        console.log(`▶️ Attempt ${attempt} to load ${url}`);
+        await page.goto(url, { waitUntil: 'domcontentloaded', timeout: 60000 });
+        loaded = true;
+      } catch (err) {
+        console.error(`❌ Attempt ${attempt} failed: ${err.message}`);
+        if (attempt === 3) throw err;
+        await new Promise(resolve => setTimeout(resolve, 3000));
+      }
+    }
+
+    await new Promise(resolve => setTimeout(resolve, 5000));
 
     const captchaFrame = await page.$('iframe[src*="recaptcha"]');
     if (captchaFrame) {
