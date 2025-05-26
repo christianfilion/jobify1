@@ -25,6 +25,10 @@ async function scrapeJobvite({ company, url, proxy }) {
 
   try {
     await page.goto(url, { waitUntil: 'domcontentloaded', timeout: 60000 });
+
+    // Optional: wait manually for safety
+    // await new Promise(resolve => setTimeout(resolve, 3000));
+
     await page.waitForSelector('.jv-job-list-name a', { timeout: 10000 });
 
     const jobs = await page.$$eval('.jv-job-list-name a', links =>
