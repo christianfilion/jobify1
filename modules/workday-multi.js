@@ -26,7 +26,7 @@ async function scrapeWorkday({ company, url, proxy }) {
 
   try {
     await page.goto(url, { waitUntil: 'domcontentloaded', timeout: 60000 });
-    await page.waitForTimeout(5000);
+    await new Promise(resolve => setTimeout(resolve, 5000)); // ✅ Fixed delay
 
     // Handle embedded iframe or ADP/Workday frame
     const allFrames = page.mainFrame().childFrames();
