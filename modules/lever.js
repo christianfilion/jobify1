@@ -25,6 +25,10 @@ async function scrapeLever({ company, url, proxy }) {
 
   try {
     await page.goto(url, { waitUntil: 'domcontentloaded', timeout: 60000 });
+
+    // Optional: wait to ensure job data is rendered if needed
+    // await new Promise(resolve => setTimeout(resolve, 3000));
+
     await page.waitForSelector('div.posting', { timeout: 10000 });
 
     const jobs = await page.$$eval('div.posting', postings =>
