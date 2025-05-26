@@ -1,4 +1,3 @@
-
 const puppeteer = require('puppeteer-extra');
 const StealthPlugin = require('puppeteer-extra-plugin-stealth');
 const { insertJobs } = require('../supabase');
@@ -11,7 +10,7 @@ async function scrapeBrassring(company) {
 
   try {
     await page.goto(company.url, { waitUntil: 'networkidle2', timeout: 60000 });
-    await page.waitForTimeout(5000);
+    await new Promise(resolve => setTimeout(resolve, 5000)); // ⬅️ Replaced invalid method
 
     const allFrames = page.frames();
     const brassringFrame = allFrames.find(f => f.url().includes('brassring.com'));
@@ -35,4 +34,5 @@ async function scrapeBrassring(company) {
 
   await browser.close();
 }
+
 module.exports = { scrapeBrassring };
