@@ -25,7 +25,7 @@ async function scrapeSuccessFactors({ company, url, proxy }) {
 
   try {
     await page.goto(url, { waitUntil: 'domcontentloaded', timeout: 60000 });
-    await page.waitForTimeout(5000);
+    await new Promise(resolve => setTimeout(resolve, 5000)); // ✅ fixed delay
 
     const captchaFrame = await page.$('iframe[src*="recaptcha"]');
     if (captchaFrame) {
@@ -50,16 +50,12 @@ async function scrapeSuccessFactors({ company, url, proxy }) {
           }
         };
         traverse(root.body);
-        return elements.map(el => ({
-          title: el.innerText?.trim() || 'Untitled',
-          url: el.href || window.location.href,
-          source: 'SuccessFactors',
-          created_at: new Date().toISOString()
-        }));
+
+        console.log(document.body.innerHTML); // ⬅️ debugging aid
+        return [];
       }
 
-      console.log(document.body.innerHTML);
-      return [];
+      return queryShadowRoots('a.jobTitle, div.job-card');
     });
 
     if (jobs.length > 0) {
