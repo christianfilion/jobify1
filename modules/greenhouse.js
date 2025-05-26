@@ -21,6 +21,9 @@ async function scrapeGreenhouse({ company, url, proxy }) {
     console.log(`🔍 [${company}] Scraping Greenhouse at ${url}`);
     await page.goto(url, { waitUntil: 'domcontentloaded', timeout: 60000 });
 
+    // Optional: manual wait if necessary
+    // await new Promise(resolve => setTimeout(resolve, 3000));
+
     await page.waitForSelector('section#jobs li a, div.openings a', { timeout: 15000 });
 
     const jobs = await page.$$eval('section#jobs li a, div.openings a', links =>
