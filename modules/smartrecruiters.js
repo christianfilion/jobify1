@@ -48,7 +48,7 @@ async function scrapeSmartRecruiters({ company, url, proxy }) {
 
   try {
     await page.goto(url, { waitUntil: 'networkidle0', timeout: 60000 });
-    await page.waitForTimeout(8000);
+    await new Promise(resolve => setTimeout(resolve, 8000)); // ✅ fixed delay
   } catch (err) {
     console.error(`❌ [${company}] Failed to load SmartRecruiters page: ${err.message}`);
     await browser.close();
