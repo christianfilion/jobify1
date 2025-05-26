@@ -25,28 +25,12 @@ async function scrapeRecruitee({ company, url, proxy }) {
 
   try {
     await page.goto(url, { waitUntil: 'domcontentloaded', timeout: 60000 });
+
+    // Optional delay if the page needs more time to render fully
+    // await new Promise(resolve => setTimeout(resolve, 3000));
+
     await page.waitForSelector('a[href*="/o/"]', { timeout: 10000 });
 
     const jobs = await page.$$eval('a[href*="/o/"]', links =>
       links.map(el => ({
-        title: el.innerText?.trim() || 'Untitled',
-        url: el.href,
-        source: 'Recruitee',
-        created_at: new Date().toISOString()
-      }))
-    );
-
-    if (jobs.length > 0) {
-      await insertJobs(jobs);
-      console.log(`✅ [${company}] Inserted ${jobs.length} Recruitee jobs`);
-    } else {
-      console.warn(`⚠️ [${company}] No jobs found on Recruitee`);
-    }
-  } catch (err) {
-    console.error(`❌ [${company}] Recruitee error: ${err.message}`);
-  } finally {
-    await browser.close();
-  }
-}
-
-module.exports = { scrapeRecruitee };
+        title: el.innerText?.trim() || 'Untitl
